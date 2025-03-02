@@ -1,8 +1,13 @@
 package jm.task.core.jdbc.util;
 
+import jm.task.core.jdbc.model.User;
+import org.hibernate.SessionFactory;
+import org.hibernate.cfg.Configuration;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Properties;
 
 public class Util {
 
@@ -32,5 +37,20 @@ public class Util {
         Connection conn = DriverManager.getConnection(connectionURL, userName,
                 password);
         return conn;
+    }
+
+    public static SessionFactory getSessionFactory() {
+        Properties properties = new Properties();
+        properties.setProperty("hibernate.connection.url", "jdbc:mysql://localhost/test_schema");
+        properties.setProperty("hibernate.connection.username", "root");
+        properties.setProperty("hibernate.connection.password", "root");
+        properties.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
+        properties.setProperty("hibernate.connection.driver_class", "com.mysql.cj.jdbc.Driver");
+
+        return new Configuration()
+                .setProperties(properties)
+                .addAnnotatedClass(User.class)
+                .buildSessionFactory();
+//        return new Configuration().buildSessionFactory();
     }
 }
