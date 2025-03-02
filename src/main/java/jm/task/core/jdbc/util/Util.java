@@ -11,6 +11,8 @@ import java.util.Properties;
 
 public class Util {
 
+    private static SessionFactory sessionFactory;
+
     // Connect to MySQL
     public static Connection getMySQLConnection() throws SQLException,
             ClassNotFoundException {
@@ -40,6 +42,10 @@ public class Util {
     }
 
     public static SessionFactory getSessionFactory() {
+        if (sessionFactory != null) {
+            return sessionFactory;
+        }
+
         Properties properties = new Properties();
         properties.setProperty("hibernate.connection.url", "jdbc:mysql://localhost/test_schema");
         properties.setProperty("hibernate.connection.username", "root");
@@ -47,10 +53,11 @@ public class Util {
         properties.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
         properties.setProperty("hibernate.connection.driver_class", "com.mysql.cj.jdbc.Driver");
 
-        return new Configuration()
+        sessionFactory = new Configuration()
                 .setProperties(properties)
                 .addAnnotatedClass(User.class)
                 .buildSessionFactory();
-//        return new Configuration().buildSessionFactory();
+
+        return sessionFactory;
     }
 }
